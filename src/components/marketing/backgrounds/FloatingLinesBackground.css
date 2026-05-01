@@ -1,0 +1,15 @@
+.floating-lines-background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+.floating-lines-background canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0.88;
+}
