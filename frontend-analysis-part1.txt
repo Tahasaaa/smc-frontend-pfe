@@ -1,0 +1,1535 @@
+
+
+==================== package.json ====================
+
+{
+  "name": "smc-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.3.0",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fortawesome/fontawesome-free": "^7.2.0",
+    "@hugeicons/core-free-icons": "^4.0.0",
+    "@hugeicons/react": "^1.1.6",
+    "@types/three": "^0.184.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "d3": "^7.9.0",
+    "framer-motion": "^12.38.0",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^1.5.0",
+    "maplibre-gl": "^5.23.0",
+    "next-themes": "^0.4.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-icons": "^5.6.0",
+    "react-leaflet": "^5.0.0",
+    "react-router-dom": "^7.13.2",
+    "recharts": "^3.8.1",
+    "shadcn": "^4.1.1",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.5.0",
+    "three": "^0.184.0",
+    "tw-animate-css": "^1.4.0",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@eslint/js": "^9.39.4",
+    "@rolldown/plugin-babel": "^0.2.1",
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/babel__core": "^7.20.5",
+    "@types/d3": "^7.4.3",
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^24.12.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.4.27",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.57.0",
+    "vite": "^8.0.1"
+  }
+}
+
+
+==================== src\App.tsx ====================
+
+import { useState } from "react";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+
+import Home from "./pages/Home";
+import Login from "./pages/auth/Login";
+import VerifyOtp from "./pages/auth/VerifyOtp";
+import Dashboard from "./pages/Dashboard";
+import MonitoringPage from "./pages/MonitoringWorkbenchPage";
+import MapPage from "./pages/MapPage";
+import IncidentsPage from "./pages/IncidentsPage";
+import RcaPage from "./pages/RcaPage";
+import RunbooksPage from "./pages/RunbooksPage";
+import InternalMailPage from "./pages/InternalMailPage";
+import AssistantPage from "./pages/AssistantPage";
+import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingsPage";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import AppBootScreen from "@/components/system/AppBootScreen";
+
+function AppRoutes() {
+  const location = useLocation();
+  const [bootVisible, setBootVisible] = useState(true);
+
+  const skipBootScreen = location.pathname.startsWith("/rca");
+
+  return (
+    <>
+      {!skipBootScreen && (
+        <AppBootScreen
+          visible={bootVisible}
+          onComplete={() => setBootVisible(false)}
+        />
+      )}
+
+      <Routes>
+        {/* public */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+
+        {/* protected */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/monitoring"
+          element={
+            <ProtectedRoute>
+              <MonitoringPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/map"
+          element={
+            <ProtectedRoute>
+              <MapPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/incidents"
+          element={
+            <ProtectedRoute>
+              <IncidentsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/rca"
+          element={
+            <ProtectedRoute>
+              <RcaPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/runbooks"
+          element={
+            <ProtectedRoute>
+              <RunbooksPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/mail"
+          element={
+            <ProtectedRoute>
+              <InternalMailPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/assistant"
+          element={
+            <ProtectedRoute>
+              <AssistantPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <SettingsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+
+==================== src\main.tsx ====================
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { Toaster } from "@/components/ui/sonner";
+import "./index.css";
+import "maplibre-gl/dist/maplibre-gl.css";
+
+import "leaflet/dist/leaflet.css";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+    <Toaster richColors position="top-center" />
+  </React.StrictMode>
+);
+
+
+
+==================== src\services\api.ts ====================
+
+const AUTH_API_BASE_URL = "http://127.0.0.1:8000/api";
+const KPI_API_BASE_URL = "http://127.0.0.1:8001/api";
+const RCA_API_BASE_URL = "http://127.0.0.1:8006/api";
+
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
+type QueryValue = string | number | boolean | undefined | null;
+
+type RequestOptions = {
+  method?: HttpMethod;
+  body?: unknown;
+  token?: string;
+  query?: Record<string, QueryValue>;
+  baseUrl?: string;
+};
+
+function buildUrl(
+  baseUrl: string,
+  endpoint: string,
+  query?: RequestOptions["query"]
+) {
+  const url = new URL(`${baseUrl}${endpoint}`);
+
+  if (query) {
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        url.searchParams.append(key, String(value));
+      }
+    });
+  }
+
+  return url.toString();
+}
+
+function getStoredToken() {
+  return localStorage.getItem("token");
+}
+
+export async function apiRequest<T>(
+  endpoint: string,
+  options: RequestOptions = {}
+): Promise<T> {
+  const {
+    method = "GET",
+    body,
+    token,
+    query,
+    baseUrl = AUTH_API_BASE_URL,
+  } = options;
+
+  const authToken = token || getStoredToken();
+  const url = buildUrl(baseUrl, endpoint, query);
+
+  let response: Response;
+
+  try {
+    response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    throw new Error(
+      `Network error while calling ${endpoint}. Check that the service is running and CORS is configured.`
+    );
+  }
+
+  const data = await response.json().catch(() => ({}));
+
+  if (response.status === 401) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("pending_verification_email");
+    window.location.href = "/login";
+    throw new Error("Session expired. Please log in again.");
+  }
+
+  if (!response.ok) {
+    const message =
+      data?.message ||
+      data?.detail ||
+      data?.error ||
+      `Request failed: ${response.status} ${response.statusText} for ${endpoint}`;
+
+    throw new Error(message);
+  }
+
+  return data as T;
+}
+
+export { AUTH_API_BASE_URL, KPI_API_BASE_URL, RCA_API_BASE_URL };
+
+
+==================== src\services\auth.ts ====================
+
+import { apiRequest, AUTH_API_BASE_URL } from "./api";
+
+export type LoginPayload = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  message: string;
+  requires_verification: boolean;
+  email: string;
+};
+
+export type VerifyCodePayload = {
+  email: string;
+  code: string;
+};
+
+export type VerifyCodeResponse = {
+  token: string;
+  user: {
+    id: number;
+    fullname: string;
+    email: string;
+    role: string;
+    permissions: string[];
+  };
+};
+
+export type ChangePasswordPayload = {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+};
+
+export type ChangePasswordResponse = {
+  message: string;
+};
+
+export async function loginUser(payload: LoginPayload) {
+  return apiRequest<LoginResponse>("/auth/login/", {
+    method: "POST",
+    body: payload,
+    baseUrl: AUTH_API_BASE_URL,
+  });
+}
+
+export async function verifyOtpCode(payload: VerifyCodePayload) {
+  return apiRequest<VerifyCodeResponse>("/auth/verify-code/", {
+    method: "POST",
+    body: payload,
+    baseUrl: AUTH_API_BASE_URL,
+  });
+}
+
+export async function changePasswordUser(payload: ChangePasswordPayload) {
+  return apiRequest<ChangePasswordResponse>("/auth/change-password/", {
+    method: "POST",
+    body: payload,
+    baseUrl: AUTH_API_BASE_URL,
+  });
+}
+
+export function saveAuthSession(data: VerifyCodeResponse) {
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
+}
+
+export function savePendingEmail(email: string) {
+  localStorage.setItem("pending_verification_email", email);
+}
+
+export function getPendingEmail() {
+  return localStorage.getItem("pending_verification_email");
+}
+
+export function clearPendingEmail() {
+  localStorage.removeItem("pending_verification_email");
+}
+
+export function getToken() {
+  return localStorage.getItem("token");
+}
+
+export function getStoredUser() {
+  const raw = localStorage.getItem("user");
+  return raw ? JSON.parse(raw) : null;
+}
+
+export function logoutUser() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("pending_verification_email");
+}
+
+
+==================== src\components\auth\ProtectedRoute.tsx ====================
+
+import { Navigate } from "react-router-dom";
+
+type ProtectedRouteProps = {
+  children: React.ReactNode;
+};
+
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+}
+
+
+==================== src\components\layout\AppShell.tsx ====================
+
+import type { ReactNode } from "react";
+import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
+import NotificationToastViewport from "@/components/notifications/NotificationToastViewport";
+import ComingSoonScope from "@/components/system/ComingSoonScope";
+import {
+  setTechnologyScope,
+  useTechnologyScope,
+} from "@/stores/technologyScopeStore";
+
+type Props = {
+  children: ReactNode;
+};
+
+export default function AppShell({ children }: Props) {
+  const technology = useTechnologyScope();
+  const scopeIsLive = technology === "3G";
+
+  return (
+    <div className="min-h-screen bg-transparent text-white">
+      <NotificationToastViewport />
+
+      <div className="flex min-h-screen bg-transparent">
+        <Sidebar />
+
+        <div className="min-w-0 flex-1 bg-transparent">
+          <div className="relative z-[70] px-3 pb-3 pt-3 md:px-4">
+            <Topbar />
+          </div>
+
+          <main className="relative z-[10] min-w-0 px-3 pb-4 md:px-4 md:pb-5">
+            <div className="mx-auto max-w-none">
+              {scopeIsLive ? (
+                children
+              ) : (
+                <ComingSoonScope
+                  technology={technology}
+                  onReturnToLive={() => setTechnologyScope("3G")}
+                />
+              )}
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+==================== src\components\layout\Sidebar.tsx ====================
+
+import {
+  LayoutGrid,
+  Activity,
+  Map,
+  FileText,
+  Mail,
+  User,
+  Settings,
+  LogOut,
+  Pin,
+  Bot,
+  BrainCircuit,
+  BookOpenCheck,
+} from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { getStoredUser, logoutUser } from "@/services/auth";
+
+const operationItems = [
+  { label: "Dashboard", icon: LayoutGrid, to: "/dashboard" },
+  { label: "Monitoring", icon: Activity, to: "/monitoring" },
+  { label: "Map", icon: Map, to: "/map" },
+  { label: "Incidents", icon: FileText, to: "/incidents" },
+];
+
+const intelligenceItems = [
+  { label: "Assistant", icon: Bot, to: "/assistant" },
+  { label: "RCA", icon: BrainCircuit, to: "/rca" },
+  { label: "Runbooks", icon: BookOpenCheck, to: "/runbooks" },
+];
+
+const workspaceItems = [
+  { label: "Mail", icon: Mail, to: "/mail" },
+  { label: "Profile", icon: User, to: "/profile" },
+  { label: "Settings", icon: Settings, to: "/settings" },
+];
+
+export default function Sidebar() {
+  const navigate = useNavigate();
+  const user = getStoredUser();
+
+  const [isPinned, setIsPinned] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const expanded = isPinned || isHovered;
+
+  const initials = useMemo(() => {
+    if (!user?.fullname) return "U";
+
+    return user.fullname
+      .split(" ")
+      .map((part: string) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  }, [user]);
+
+  function handleLogout() {
+    logoutUser();
+    navigate("/login");
+  }
+
+  return (
+    <aside
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={[
+        "app-surface sticky top-0 flex h-screen shrink-0 flex-col overflow-hidden",
+        "border-r border-white/[0.06] text-white",
+        "bg-[linear-gradient(180deg,#090c11_0%,#0b1016_42%,#0a0f15_100%)]",
+        "shadow-[inset_-1px_0_0_rgba(255,255,255,0.02),18px_0_38px_rgba(0,0,0,0.24)]",
+        "transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        expanded ? "w-[278px]" : "w-[96px]",
+      ].join(" ")}
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_top,rgba(255,121,0,0.10),transparent_62%)]" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-px bg-white/[0.04]" />
+
+      <div className="relative flex h-[84px] items-center justify-between border-b border-white/[0.06] px-4">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-[1.15rem] border border-orange-400/14 bg-[linear-gradient(180deg,#111722_0%,#0d141c_100%)] shadow-[0_12px_28px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <div className="pointer-events-none absolute inset-0 rounded-[1.15rem] shadow-[inset_0_0_0_1px_rgba(255,121,0,0.06)]" />
+            <img
+              src="Orange_small.png"
+              alt="Orange"
+              width={28}
+              height={28}
+              className="relative z-10"
+            />
+          </div>
+
+          <div
+            className={[
+              "min-w-0 overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]",
+              expanded
+                ? "max-w-[180px] translate-x-0 opacity-100"
+                : "max-w-0 -translate-x-3 opacity-0",
+            ].join(" ")}
+          >
+            <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-white">
+              SMC QoS Cockpit
+            </p>
+            <p className="truncate text-[11px] text-white/46">
+              Orange Tunisia · Network Command
+            </p>
+          </div>
+        </div>
+
+        <div
+          className={[
+            "overflow-hidden transition-all duration-300",
+            expanded ? "max-w-[52px] opacity-100" : "max-w-0 opacity-0",
+          ].join(" ")}
+        >
+          <button
+            onClick={() => setIsPinned((prev) => !prev)}
+            className={[
+              "premium-icon-button orange-ring-focus h-10 w-10 rounded-xl",
+              isPinned
+                ? "border-orange-400/24 bg-orange-500/12 text-orange-300 shadow-[0_0_0_1px_rgba(255,121,0,0.08),0_10px_22px_rgba(255,121,0,0.10)]"
+                : "",
+            ].join(" ")}
+            aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+          >
+            <Pin className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <div className="px-4 pt-5">
+        <div className="premium-panel accent-frame rounded-[1.25rem]">
+          <div className="premium-panel-body px-3.5 py-3.5">
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-2.5 w-2.5 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/35" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+              </span>
+
+              <span
+                className={[
+                  "overflow-hidden text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50 transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                  expanded
+                    ? "max-w-[170px] translate-x-0 opacity-100"
+                    : "max-w-0 -translate-x-2 opacity-0",
+                ].join(" ")}
+              >
+                Operational State
+              </span>
+            </div>
+
+            <div
+              className={[
+                "overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                expanded
+                  ? "mt-2.5 max-h-20 translate-y-0 opacity-100"
+                  : "mt-0 max-h-0 -translate-y-2 opacity-0",
+              ].join(" ")}
+            >
+              <p className="text-sm font-semibold tracking-[-0.02em] text-white">
+                Live Supervision
+              </p>
+              <p className="mt-1 text-xs text-white/46">
+                KPI, incidents, and regional telemetry online
+              </p>
+            </div>
+
+            {!expanded ? (
+              <div className="mt-2 flex justify-center">
+                <span
+                  className="status-pill good px-0 py-0 text-[0px]"
+                  aria-hidden="true"
+                />
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      <nav className="flex-1 overflow-y-auto px-4 py-5">
+        <SidebarSection title="Operations" expanded={expanded}>
+          {operationItems.map((item) => (
+            <SidebarNavItem
+              key={item.to}
+              label={item.label}
+              to={item.to}
+              expanded={expanded}
+              icon={item.icon}
+            />
+          ))}
+        </SidebarSection>
+
+        <SidebarSection title="Intelligence" expanded={expanded}>
+          {intelligenceItems.map((item) => (
+            <SidebarNavItem
+              key={item.to}
+              label={item.label}
+              to={item.to}
+              expanded={expanded}
+              icon={item.icon}
+            />
+          ))}
+        </SidebarSection>
+
+        <SidebarSection title="Workspace" expanded={expanded}>
+          {workspaceItems.map((item) => (
+            <SidebarNavItem
+              key={item.to}
+              label={item.label}
+              to={item.to}
+              expanded={expanded}
+              icon={item.icon}
+            />
+          ))}
+        </SidebarSection>
+      </nav>
+
+      <div className="border-t border-white/[0.06] p-4">
+        <div className="premium-panel rounded-[1.25rem]">
+          <div className="premium-panel-body px-3.5 py-3.5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.95rem] border border-white/[0.07] bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.03))] text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+                {initials}
+              </div>
+
+              <div
+                className={[
+                  "min-w-0 overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                  expanded
+                    ? "max-w-[160px] translate-x-0 opacity-100"
+                    : "max-w-0 -translate-x-3 opacity-0",
+                ].join(" ")}
+              >
+                <p className="truncate text-sm font-medium text-white">
+                  {user?.fullname || "User"}
+                </p>
+                <p className="truncate text-xs text-white/46">
+                  {user?.role || "NOC Engineer"}
+                </p>
+              </div>
+            </div>
+
+            <div
+              className={[
+                "overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                expanded
+                  ? "mt-3 max-h-16 translate-y-0 opacity-100"
+                  : "mt-0 max-h-0 -translate-y-2 opacity-0",
+              ].join(" ")}
+            >
+              <button
+                onClick={handleLogout}
+                className="premium-button-ghost orange-ring-focus flex w-full items-center justify-center gap-2 rounded-xl border-white/[0.08] text-white/80 hover:text-white"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function SidebarSection({
+  title,
+  expanded,
+  children,
+}: {
+  title: string;
+  expanded: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mb-6 space-y-2">
+      {expanded ? (
+        <p className="px-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/28">
+          {title}
+        </p>
+      ) : null}
+
+      {children}
+    </div>
+  );
+}
+
+function SidebarNavItem({
+  label,
+  to,
+  expanded,
+  icon: Icon,
+}: {
+  label: string;
+  to: string;
+  expanded: boolean;
+  icon: React.ComponentType<{ className?: string }>;
+}) {
+  return (
+    <NavLink to={to}>
+      {({ isActive }) => (
+        <div
+          className={[
+            "group relative flex items-center gap-3 overflow-hidden rounded-[1.15rem] border px-3 py-3 transition-all duration-200",
+            isActive
+              ? "border-orange-400/14 bg-[linear-gradient(90deg,rgba(255,121,0,0.14),rgba(255,121,0,0.05))] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_10px_22px_rgba(255,121,0,0.08)]"
+              : "border-transparent text-white/62 hover:border-white/[0.06] hover:bg-white/[0.035] hover:text-white",
+          ].join(" ")}
+        >
+          <div
+            className={[
+              "absolute inset-y-[11px] left-0 w-[3px] rounded-r-full transition-all duration-200",
+              isActive
+                ? "bg-[#ff7900] opacity-100"
+                : "bg-[#ff7900]/0 opacity-0 group-hover:bg-[#ff7900]/70 group-hover:opacity-100",
+            ].join(" ")}
+          />
+
+          <div
+            className={[
+              "flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.95rem] border transition-all duration-200",
+              isActive
+                ? "border-white/[0.08] bg-white/[0.07] text-white"
+                : "border-white/[0.04] bg-white/[0.025] text-white/72 group-hover:border-white/[0.08] group-hover:bg-white/[0.05] group-hover:text-white",
+            ].join(" ")}
+          >
+            <Icon className="h-[18px] w-[18px]" />
+          </div>
+
+          <span
+            className={[
+              "whitespace-nowrap text-sm font-medium tracking-[-0.01em] transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]",
+              expanded
+                ? "max-w-[160px] translate-x-0 opacity-100"
+                : "max-w-0 -translate-x-3 overflow-hidden opacity-0",
+            ].join(" ")}
+          >
+            {label}
+          </span>
+
+          {isActive && expanded ? (
+            <span className="ml-auto hidden text-[10px] font-semibold uppercase tracking-[0.14em] text-orange-300/85 xl:inline">
+              Active
+            </span>
+          ) : null}
+        </div>
+      )}
+    </NavLink>
+  );
+}
+
+
+==================== src\components\layout\Topbar.tsx ====================
+
+import {
+  CalendarDays,
+  Mail,
+  Search,
+  Settings,
+  User,
+  LogOut,
+} from "lucide-react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import { createPortal } from "react-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getStoredUser, getToken, logoutUser } from "@/services/auth";
+import NotificationBell from "@/components/notifications/NotificationBell";
+import {
+  setTechnologyScope,
+  useTechnologyScope,
+  type TechnologyScope,
+} from "@/stores/technologyScopeStore";
+import { getCartographyFilterOptions } from "@/services/cartography";
+import { getMyProfile } from "@/services/profileService";
+
+const technologyOptions: TechnologyScope[] = ["3G", "4G", "5G"];
+
+type TopbarProfileIdentity = {
+  fullName: string;
+  email: string;
+  role: string;
+  avatarUrl: string;
+};
+
+export default function Topbar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const storedUser = getStoredUser();
+  const technology = useTechnologyScope();
+
+  const [dateValue, setDateValue] = useState(() => {
+    const now = new Date();
+    return now.toISOString().slice(0, 10);
+  });
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const [loadingDates, setLoadingDates] = useState(false);
+
+  const [profileIdentity, setProfileIdentity] = useState<TopbarProfileIdentity>({
+    fullName: storedUser?.fullname || "",
+    email: storedUser?.email || "",
+    role: storedUser?.role || "",
+    avatarUrl: "",
+  });
+  const [loadingProfileIdentity, setLoadingProfileIdentity] = useState(false);
+
+  const [openMenu, setOpenMenu] = useState(false);
+  const [menuStyle, setMenuStyle] = useState<{
+    top: number;
+    left: number;
+    width: number;
+  } | null>(null);
+
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+
+  const sortedAvailableDates = useMemo(() => {
+    return [...availableDates].sort((a, b) => a.localeCompare(b));
+  }, [availableDates]);
+
+  const minDate = sortedAvailableDates[0] || undefined;
+  const maxDate = sortedAvailableDates[sortedAvailableDates.length - 1] || undefined;
+
+  const isMapPage = location.pathname === "/map";
+
+  const displayName = profileIdentity.fullName || storedUser?.fullname || "User";
+  const displayEmail = profileIdentity.email || storedUser?.email || "No email";
+  const displayRole = profileIdentity.role || storedUser?.role || "Operator";
+
+  const initials = useMemo(() => {
+    const source =
+      profileIdentity.fullName ||
+      storedUser?.fullname ||
+      storedUser?.email ||
+      "U";
+
+    return source
+      .split(" ")
+      .filter(Boolean)
+      .map((part: string) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  }, [profileIdentity.fullName, storedUser]);
+
+  function handleLogout() {
+    logoutUser();
+    navigate("/login");
+  }
+
+  async function loadProfileIdentity() {
+    const token = getToken();
+
+    if (!token) {
+      setProfileIdentity({
+        fullName: storedUser?.fullname || "",
+        email: storedUser?.email || "",
+        role: storedUser?.role || "",
+        avatarUrl: "",
+      });
+      return;
+    }
+
+    try {
+      setLoadingProfileIdentity(true);
+
+      const response = await getMyProfile();
+      const backendProfile = response.profile;
+
+      setProfileIdentity({
+        fullName: backendProfile.full_name || storedUser?.fullname || "",
+        email: backendProfile.email || storedUser?.email || "",
+        role: backendProfile.role || storedUser?.role || "",
+        avatarUrl: backendProfile.avatar_url || backendProfile.avatar || "",
+      });
+    } catch {
+      setProfileIdentity({
+        fullName: storedUser?.fullname || "",
+        email: storedUser?.email || "",
+        role: storedUser?.role || "",
+        avatarUrl: "",
+      });
+    } finally {
+      setLoadingProfileIdentity(false);
+    }
+  }
+
+  useEffect(() => {
+    loadProfileIdentity();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (openMenu) {
+      loadProfileIdentity();
+    }
+  }, [openMenu]);
+
+  useEffect(() => {
+    function handleFocus() {
+      loadProfileIdentity();
+    }
+
+    function handleProfileUpdated() {
+      loadProfileIdentity();
+    }
+
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("profile:updated", handleProfileUpdated as EventListener);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener(
+        "profile:updated",
+        handleProfileUpdated as EventListener
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Node;
+      const clickedInsideMenu = menuRef.current?.contains(target);
+      const clickedTrigger = triggerRef.current?.contains(target);
+
+      if (!clickedInsideMenu && !clickedTrigger) {
+        setOpenMenu(false);
+      }
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpenMenu(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!openMenu || !triggerRef.current) return;
+
+    function updateMenuPosition() {
+      if (!triggerRef.current) return;
+
+      const rect = triggerRef.current.getBoundingClientRect();
+      const menuWidth = 290;
+      const margin = 12;
+
+      let left = rect.right - menuWidth;
+      if (left < margin) left = margin;
+      if (left + menuWidth > window.innerWidth - margin) {
+        left = window.innerWidth - menuWidth - margin;
+      }
+
+      const top = rect.bottom + 12;
+
+      setMenuStyle({
+        top,
+        left,
+        width: menuWidth,
+      });
+    }
+
+    updateMenuPosition();
+
+    window.addEventListener("resize", updateMenuPosition);
+    window.addEventListener("scroll", updateMenuPosition, true);
+
+    return () => {
+      window.removeEventListener("resize", updateMenuPosition);
+      window.removeEventListener("scroll", updateMenuPosition, true);
+    };
+  }, [openMenu]);
+
+  useEffect(() => {
+    if (!isMapPage || technology !== "3G") return;
+
+    let active = true;
+
+    async function loadDates() {
+      try {
+        setLoadingDates(true);
+        const options = await getCartographyFilterOptions();
+
+        if (!active) return;
+
+        const dates = Array.isArray(options?.dates) ? options.dates : [];
+        const normalized = dates.filter(Boolean).sort((a, b) => a.localeCompare(b));
+
+        setAvailableDates(normalized);
+
+        const params = new URLSearchParams(location.search);
+        const urlDate = params.get("date");
+
+        if (urlDate) {
+          const resolved = resolveNearestAvailableDate(urlDate, normalized);
+          setDateValue(resolved);
+        } else if (normalized.length) {
+          const latest = normalized[normalized.length - 1];
+          setDateValue(latest);
+
+          params.set("date", latest);
+          navigate(
+            {
+              pathname: location.pathname,
+              search: `?${params.toString()}`,
+            },
+            { replace: true }
+          );
+        }
+      } catch {
+        if (!active) return;
+        setAvailableDates([]);
+      } finally {
+        if (active) setLoadingDates(false);
+      }
+    }
+
+    loadDates();
+
+    return () => {
+      active = false;
+    };
+  }, [isMapPage, technology, location.pathname, location.search, navigate]);
+
+  useEffect(() => {
+    if (!isMapPage) return;
+
+    const params = new URLSearchParams(location.search);
+    const urlDate = params.get("date");
+
+    if (urlDate && urlDate !== dateValue) {
+      setDateValue(urlDate);
+    }
+  }, [isMapPage, location.search, dateValue]);
+
+  function handleDateChange(nextRawDate: string) {
+    if (!nextRawDate) return;
+
+    let finalDate = nextRawDate;
+
+    if (availableDates.length) {
+      finalDate = resolveNearestAvailableDate(nextRawDate, availableDates);
+    }
+
+    setDateValue(finalDate);
+
+    if (isMapPage) {
+      const params = new URLSearchParams(location.search);
+      params.set("date", finalDate);
+
+      navigate(
+        {
+          pathname: location.pathname,
+          search: `?${params.toString()}`,
+        },
+        { replace: true }
+      );
+    }
+  }
+
+  return (
+    <header className="premium-panel relative z-[80] overflow-visible rounded-[1.45rem]">
+      <div className="premium-panel-body px-4 py-3 md:px-5">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+              <div className="min-w-0 flex-1">
+                <SearchBar />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="premium-segmented shrink-0">
+                  {technologyOptions.map((item) => {
+                    const active = technology === item;
+                    const comingSoon = item !== "3G";
+
+                    return (
+                      <button
+                        key={item}
+                        onClick={() => setTechnologyScope(item)}
+                        className={[
+                          "premium-segmented-item orange-ring-focus min-w-[56px]",
+                          active ? "is-active" : "",
+                        ].join(" ")}
+                        title={
+                          comingSoon
+                            ? `${item} scope is coming soon`
+                            : "3G live scope"
+                        }
+                      >
+                        {item}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <label className="premium-toolbar-pill orange-ring-focus shrink-0 gap-2.5 rounded-xl border-white/[0.08] bg-white/[0.035] px-3 py-2 text-white/76">
+                  <CalendarDays className="h-4 w-4 text-[#ff7900]" />
+                  <input
+                    type="date"
+                    value={dateValue}
+                    min={minDate}
+                    max={maxDate}
+                    onChange={(e) => handleDateChange(e.target.value)}
+                    className="bg-transparent text-sm text-white/82 outline-none"
+                    title={
+                      loadingDates
+                        ? "Loading dataset dates..."
+                        : availableDates.length
+                        ? `Available dataset range: ${minDate} → ${maxDate}`
+                        : "Choose a date"
+                    }
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex shrink-0 items-center justify-end gap-2">
+            <NotificationBell />
+
+            <button
+              onClick={() => navigate("/mail")}
+              className="premium-icon-button orange-ring-focus"
+              aria-label="Open internal mail"
+            >
+              <Mail className="h-[18px] w-[18px]" />
+            </button>
+
+            <button
+              ref={triggerRef}
+              onClick={() => setOpenMenu((prev) => !prev)}
+              className="orange-ring-focus relative flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] shadow-[0_8px_20px_rgba(0,0,0,0.22)] transition hover:border-white/[0.12] hover:bg-white/[0.055]"
+              aria-label="Open profile menu"
+            >
+              {profileIdentity.avatarUrl ? (
+                <img
+                  src={profileIdentity.avatarUrl}
+                  alt={displayName}
+                  className="h-9 w-9 rounded-full border border-orange-400/18 object-cover shadow-[0_8px_20px_rgba(255,121,0,0.12)]"
+                />
+              ) : (
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-orange-400/18 bg-[linear-gradient(180deg,rgba(255,121,0,0.22),rgba(255,121,0,0.12))] text-sm font-semibold text-white shadow-[0_8px_20px_rgba(255,121,0,0.12)]">
+                  {initials}
+                </div>
+              )}
+
+              <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-[#0b1016] bg-emerald-400" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {openMenu && menuStyle
+        ? createPortal(
+            <div
+              ref={menuRef}
+              style={{
+                position: "fixed",
+                top: menuStyle.top,
+                left: menuStyle.left,
+                width: menuStyle.width,
+                zIndex: 9999,
+              }}
+              className="overflow-hidden rounded-[1.25rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(18,23,30,0.98),rgba(12,17,24,0.98))] shadow-[0_22px_50px_rgba(0,0,0,0.42)] backdrop-blur-xl"
+            >
+              <div className="border-b border-white/[0.06] px-4 py-4">
+                <div className="flex items-center gap-3">
+                  {profileIdentity.avatarUrl ? (
+                    <img
+                      src={profileIdentity.avatarUrl}
+                      alt={displayName}
+                      className="h-12 w-12 rounded-[0.95rem] border border-white/[0.08] object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-12 w-12 items-center justify-center rounded-[0.95rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025))] text-base font-semibold text-white">
+                      {initials}
+                    </div>
+                  )}
+
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-white">
+                      {displayName}
+                    </p>
+                    <p className="mt-1 truncate text-xs text-white/44">
+                      {displayEmail}
+                    </p>
+                    <p className="mt-1 truncate text-[11px] text-orange-200/80">
+                      {loadingProfileIdentity ? "Loading..." : displayRole}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-1 p-2">
+                <MenuLink
+                  to="/profile"
+                  icon={<User className="h-4 w-4" />}
+                  label="Profile"
+                  description="Personal information and role context"
+                  onClick={() => setOpenMenu(false)}
+                />
+
+                <MenuLink
+                  to="/settings"
+                  icon={<Settings className="h-4 w-4" />}
+                  label="Settings"
+                  description="Interface, preferences, and system options"
+                  onClick={() => setOpenMenu(false)}
+                />
+
+                <button
+                  onClick={handleLogout}
+                  className="flex w-full items-start gap-3 rounded-[1rem] px-3 py-3 text-left transition hover:bg-red-500/10"
+                >
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[0.85rem] border border-red-500/16 bg-red-500/10 text-red-300">
+                    <LogOut className="h-4 w-4" />
+                  </span>
+
+                  <span className="min-w-0">
+                    <span className="block text-sm font-medium text-red-200">
+                      Logout
+                    </span>
+                    <span className="mt-0.5 block text-xs text-red-200/60">
+                      End current session
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
+    </header>
+  );
+}
+
+function SearchBar() {
+  return (
+    <div className="relative">
+      <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/32" />
+      <input
+        type="search"
+        placeholder="Search sites, cells, incidents, regions..."
+        className="premium-input orange-ring-focus w-full pl-11 pr-4 text-sm placeholder:text-white/28"
+      />
+    </div>
+  );
+}
+
+function MenuLink({
+  to,
+  icon,
+  label,
+  description,
+  onClick,
+}: {
+  to: string;
+  icon: ReactNode;
+  label: string;
+  description: string;
+  onClick: () => void;
+}) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className="flex items-start gap-3 rounded-[1rem] px-3 py-3 transition hover:bg-white/[0.05]"
+    >
+      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[0.85rem] border border-white/[0.07] bg-white/[0.04] text-white/72">
+        {icon}
+      </span>
+
+      <span className="min-w-0">
+        <span className="block text-sm font-medium text-white/88">
+          {label}
+        </span>
+        <span className="mt-0.5 block text-xs text-white/42">
+          {description}
+        </span>
+      </span>
+    </Link>
+  );
+}
+
+function resolveNearestAvailableDate(inputDate: string, dates: string[]) {
+  if (!dates.length) return inputDate;
+  if (dates.includes(inputDate)) return inputDate;
+
+  const inputTime = new Date(inputDate).getTime();
+  if (Number.isNaN(inputTime)) return dates[dates.length - 1];
+
+  let nearest = dates[0];
+  let minDiff = Infinity;
+
+  for (const date of dates) {
+    const currentTime = new Date(date).getTime();
+    const diff = Math.abs(currentTime - inputTime);
+
+    if (diff < minDiff) {
+      minDiff = diff;
+      nearest = date;
+    }
+  }
+
+  return nearest;
+}
+
+
+==================== src\stores\technologyScopeStore.ts ====================
+
+import { useSyncExternalStore } from "react";
+
+export type TechnologyScope = "3G" | "4G" | "5G";
+
+let technologyScope: TechnologyScope = "3G";
+
+const listeners = new Set<() => void>();
+
+function emitChange() {
+  listeners.forEach((listener) => listener());
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getSnapshot() {
+  return technologyScope;
+}
+
+export function useTechnologyScope() {
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+}
+
+export function getTechnologyScope() {
+  return technologyScope;
+}
+
+export function setTechnologyScope(nextScope: TechnologyScope) {
+  technologyScope = nextScope;
+  emitChange();
+}
+
+export function isLiveTechnologyScope(scope: TechnologyScope) {
+  return scope === "3G";
+}
+
+
+==================== src\stores\dateScopeStore.ts ====================
+
+import { create } from "zustand";
+
+type DateScopeState = {
+  selectedDate: string;
+  availableDates: string[];
+  setSelectedDate: (date: string) => void;
+  setAvailableDates: (dates: string[]) => void;
+  clearDateScope: () => void;
+};
+
+function normalizeDates(dates: string[]) {
+  return Array.from(new Set(dates.filter(Boolean))).sort((a, b) =>
+    b.localeCompare(a)
+  );
+}
+
+export const useDateScopeStore = create<DateScopeState>((set) => ({
+  selectedDate: "",
+  availableDates: [],
+
+  setSelectedDate: (date) =>
+    set((state) => {
+      if (!date) return { selectedDate: "" };
+
+      if (
+        state.availableDates.length > 0 &&
+        !state.availableDates.includes(date)
+      ) {
+        return { selectedDate: state.availableDates[0] ?? "" };
+      }
+
+      return { selectedDate: date };
+    }),
+
+  setAvailableDates: (dates) =>
+    set((state) => {
+      const normalized = normalizeDates(dates);
+
+      const nextSelected =
+        state.selectedDate && normalized.includes(state.selectedDate)
+          ? state.selectedDate
+          : normalized[0] ?? "";
+
+      return {
+        availableDates: normalized,
+        selectedDate: nextSelected,
+      };
+    }),
+
+  clearDateScope: () =>
+    set({
+      selectedDate: "",
+      availableDates: [],
+    }),
+}));

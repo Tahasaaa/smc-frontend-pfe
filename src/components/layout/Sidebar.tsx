@@ -9,6 +9,8 @@ import {
   LogOut,
   Pin,
   Bot,
+  BrainCircuit,
+  BookOpenCheck,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
@@ -23,6 +25,8 @@ const operationItems = [
 
 const intelligenceItems = [
   { label: "Assistant", icon: Bot, to: "/assistant" },
+  { label: "RCA", icon: BrainCircuit, to: "/rca" },
+  { label: "Runbooks", icon: BookOpenCheck, to: "/runbooks" },
 ];
 
 const workspaceItems = [

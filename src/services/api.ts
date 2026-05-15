@@ -1,5 +1,6 @@
 const AUTH_API_BASE_URL = "http://127.0.0.1:8000/api";
 const KPI_API_BASE_URL = "http://127.0.0.1:8001/api";
+const RCA_API_BASE_URL = "http://127.0.0.1:8006/api";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -59,9 +60,9 @@ export async function apiRequest<T>(
         "Content-Type": "application/json",
         ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       },
-      body: body ? JSON.stringify(body) : undefined,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
-  } catch (error) {
+  } catch {
     throw new Error(
       `Network error while calling ${endpoint}. Check that the service is running and CORS is configured.`
     );
@@ -90,4 +91,4 @@ export async function apiRequest<T>(
   return data as T;
 }
 
-export { AUTH_API_BASE_URL, KPI_API_BASE_URL };
+export { AUTH_API_BASE_URL, KPI_API_BASE_URL, RCA_API_BASE_URL };

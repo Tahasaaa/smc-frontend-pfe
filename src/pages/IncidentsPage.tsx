@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   AlertTriangle,
+  ArrowRight,
+  BrainCircuit,
   Clock3,
   RefreshCw,
   Search,
+  ShieldCheck,
   Sparkles,
   Target,
 } from "lucide-react";
@@ -54,6 +57,7 @@ const PAGE_SIZE = 20;
 const LIVE_TECHNOLOGY_OPTIONS = ["3G"];
 
 export default function IncidentsPage() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const technologyScope = useTechnologyScope();
 
@@ -311,6 +315,18 @@ export default function IncidentsPage() {
   function handleSelectIncident(id: number) {
     setSelectedIncidentId(id);
     syncIncidentParam(id);
+  }
+  function handleOpenSelectedRca() {
+    if (!selectedIncident?.ticket_number) return;
+
+    navigate(
+      `/rca?ticket=${encodeURIComponent(selectedIncident.ticket_number)}`,
+      {
+        state: {
+          incident: selectedIncident,
+        },
+      }
+    );
   }
 
   const regionOptions = useMemo(() => {
@@ -911,6 +927,67 @@ export default function IncidentsPage() {
                         but not enriched with usable region/site mapping.
                       </div>
                     )}
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-[1.08rem] border border-orange-400/14 bg-[radial-gradient(circle_at_top_left,rgba(255,121,0,0.15),transparent_34%),linear-gradient(180deg,#11171d_0%,#0c1117_100%)] shadow-[0_18px_42px_rgba(255,121,0,0.08),inset_0_1px_0_rgba(255,255,255,0.025)]">
+                  <div className="border-b border-white/[0.06] px-4 py-4">
+                    <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
+                      <div className="min-w-0">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-orange-400/14 bg-orange-500/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-orange-300">
+                          <BrainCircuit className="h-3.5 w-3.5" />
+                          Reviews / Intelligent / RCA
+                        </div>
+
+                        <h3 className="mt-3 text-[1.05rem] font-semibold tracking-[-0.04em] text-white">
+                          Root Cause Analysis Workspace
+                        </h3>
+
+                        <p className="mt-2 max-w-xl text-sm leading-6 text-white/52">
+                          Launch backend-powered RCA for this selected incident. The frontend
+                          will not duplicate KPI matching logic; it only sends the ticket number
+                          and displays the RCA service response.
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={handleOpenSelectedRca}
+                        className="orange-ring-focus inline-flex shrink-0 items-center justify-center gap-2 rounded-[1rem] border border-orange-400/18 bg-[linear-gradient(180deg,rgba(255,121,0,0.24),rgba(255,121,0,0.13))] px-4 py-3 text-sm font-semibold text-orange-100 shadow-[0_14px_32px_rgba(255,121,0,0.14),inset_0_1px_0_rgba(255,255,255,0.08)] transition hover:-translate-y-[1px] hover:border-orange-300/28 hover:bg-[linear-gradient(180deg,rgba(255,121,0,0.32),rgba(255,121,0,0.16))]"
+                      >
+                        Open RCA Workspace
+                        <ArrowRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-px bg-white/[0.06] md:grid-cols-3">
+                    <div className="bg-[rgba(255,255,255,0.018)] px-4 py-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/34">
+                        Ticket
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-white">
+                        {selectedIncident.ticket_number}
+                      </p>
+                    </div>
+
+                    <div className="bg-[rgba(255,255,255,0.018)] px-4 py-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/34">
+                        RCA Input
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-white">
+                        Backend enrichment
+                      </p>
+                    </div>
+
+                    <div className="bg-[rgba(255,255,255,0.018)] px-4 py-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/34">
+                        Engineer Flow
+                      </p>
+                      <div className="mt-1 flex items-center gap-2 text-sm font-semibold text-white">
+                        <ShieldCheck className="h-4 w-4 text-emerald-300" />
+                        Validate RCA
+                      </div>
+                    </div>
                   </div>
                 </div>
 
